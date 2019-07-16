@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+message User {
+    /** Primary key */
+    string id = 1;
+    string email = 2;
+    string name = 3;
+}
+
+
+message Network {
+    enum StateCode {
+        QLD = 0;
+        NSW = 1;
+        VIC = 2;
+        ACT = 3;
+        TAS = 4;
+        SA = 5;
+        WA = 6;
+        NT = 7;
+    }
+    enum Sector {
+        DISTRIBUTION = 0;
+        TRANSMISSION = 1;
+    }
+    /** Three letter code representing the network */
+    string id = 1;
+    string name = 2;
+    StateCode main_state = 3;
+    Sector sector = 4;
+}
+
+message Determination {
+    enum PeriodType {
+        CALENDAR_YEAR = 0;
+        FINANCIAL_YEAR = 1;
+    }
+    string id = 1;
+    PeriodType period_type = 2;
+    string details_url = 3;
+    Network network = 4;
+    google.protobuf.Timestamp first_year_start = 5;
+    google.protobuf.Timestamp first_year_end = 6;
+    google.protobuf.Timestamp last_year_end = 7;
+    repeated Milestone milestones = 8;
+}
+
+message Milestone {
+    enum Level {
+        INITIATION = 0;
+        AER_POSITION = 1;
+        CHALLENGE_PANEL = 2;
+        PROPOSAL = 3;
+        DRAFT_DECISION = 4;
+        PRELIMINARY_DECISION = 5;
+        REVISED_PROPOSAL = 6;
+        FINAL_DECISION = 7;
+        APPEAL = 8;
+        UPDATES = 9;
+        ACTUALS = 10;
+        USER_SCENARIOS = 11;
+    }
+
+    string id = 1;
+    Level level = 2;
+    string details_url = 3;
+    string ptrm_file_url = 4;
+    repeated DataPoint data_points = 5;
+}
+
+message DataPoint {
+    enum Variable {
+        ANNUAL_REVENUE_REQUIREMENT_SMOOTHED = 0;
+        ANNUAL_REVENUE_REQUIREMENT_UNSMOOTHED = 1;
+        NET_TAX_ALLOWANCE = 2;
+        OPEX = 3;
+        RETURN_OF_CAPITAL = 4;
+        RETURN_ON_CAPITAL = 5;
+        REVENUE_ADJUSTMENTS = 6;
+    }
+
+    enum UNITS {
+        AUD = 0;
+    }
+
+    string id = 1;
+    Variable variable = 2;
+    google.protobuf.Timestamp date = 3;
+    google.protobuf.Timestamp nominal_date = 4;
+    double value = 5;
+    UNITS units = 6;
+}

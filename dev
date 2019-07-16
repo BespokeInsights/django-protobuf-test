@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+from subprocess import run
+
+import click
+
+HERE = Path(__file__).parent.resolve()
+FRONTEND = HERE / "frontend"
+
+@click.group()
+def cli():
+    pass
+
+@cli.command()
+def protos():
+    run(["protoc", "--python_out", "backend/protos", "workbench.proto"])
+    run("yarn run pbjs -t static-module -w commonjs -o src/proto.js ../workbench.proto".split(), cwd=FRONTEND)
+    run("yarn run pbts -o src/proto.d.ts src/proto.js".split(), cwd=FRONTEND)
+
+cli()
